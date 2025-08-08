@@ -19,7 +19,7 @@ export default function RequestForm({ title, endpointPath, method, fields = ["us
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const [elapsed, setElapsed] = useState<number | null>(null);
-  const [result, setResult] = useState<any>(null);
+  const [result, setResult] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   async function onSubmit(e: React.FormEvent) {
@@ -33,7 +33,7 @@ export default function RequestForm({ title, endpointPath, method, fields = ["us
       const res = await fetch("/proxy", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({body: {method, userId, message, endpointPath, ids}}),
+        body: JSON.stringify({ body: { method, userId, message, endpointPath, ids } }),
       });
       const { data, elapsed, error: errMsg } = await res.json();
 
@@ -43,8 +43,12 @@ export default function RequestForm({ title, endpointPath, method, fields = ["us
         setResult(data);
         setElapsed(elapsed);
       }
-    } catch (err: any) {
-      setError(err?.message || "Network error");
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setError(err?.message || "Network error");
+      } else {
+        setError(String(err));
+      }
     } finally {
       setLoading(false);
     }

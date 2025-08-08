@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 export async function POST(req: Request) {
   try {
     const { body } = await req.json();
-    const {endpointPath, method = "POST", headers = {}, userId, message, ids} = body;
+    const { endpointPath, method = "POST", headers = {}, userId, message, ids } = body;
 
     console.log(endpointPath, method, headers, userId, message);
 
@@ -14,7 +14,7 @@ export async function POST(req: Request) {
       ...headers,
     };
 
-    const bodyPayload: Record<string, any> = {};
+    const bodyPayload: Record<string, string> = {};
     if (userId) {
       bodyPayload["user_id"] = userId;
     }
@@ -44,8 +44,12 @@ export async function POST(req: Request) {
       { ok: upstream.ok, status: upstream.status, data, elapsed },
       { status: upstream.ok ? 200 : upstream.status }
     );
-  } catch (e: any) {
+  } catch (e: unknown) {
     console.error(`Error: ${e}`);
-    return NextResponse.json({ error: e?.message ?? "Proxy error" }, { status: 500 });
+    if (e instanceof Error) {
+      return NextResponse.json({ error: e?.message ?? "Proxy error" }, { status: 500 });
+    } else {
+      return NextResponse.json({ error: String(e) ?? "Proxy error" }, { status: 500 });
+    }
   }
 }
