@@ -29,6 +29,12 @@
   background: #fff;
 }
 
+@media (prefers-color-scheme: dark) {
+  .input, .textarea {
+    color: black;
+  }
+}
+
 .button {
   height: 44px;
   border: none;
