@@ -1,0 +1,40 @@
+.menu {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: #2f2f2f;
+  padding: 16px;
+  max-width: 200px;
+  min-width: 100px;
+  min-height: 100vh;
+}
+
+.menuTitle {
+  font-size: 20px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.menuList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.menuItem {
+  padding: 10px 12px;
+  border-radius: 6px;
+  text-decoration: none;
+  color: #ddd;
+  background: transparent;
+}
+
+.menuItem:hover {
+  background: #3d3d3d;
+  color: #fff;
+}
+
+.active {
+  background: #3d3d3d;
+  color: #fff;
+}
