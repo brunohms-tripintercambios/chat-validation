@@ -52,6 +52,7 @@ export default function RequestForm({ title, endpointPath, method, fields = ["us
         const dataWithMessage = {
           ...data,
           ...(message ? { request_message: message } : {}),
+          ...(userId ? { user_id: userId } : {}),
         };
 
         addResult(dataWithMessage, elapsed);
