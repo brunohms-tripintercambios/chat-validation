@@ -127,7 +127,7 @@ export default function RequestForm({ title, endpointPath, method, fields = ["us
             Mensagem
             <textarea
               className={styles.textarea}
-              placeholder="Digite a mensagem"
+              placeholder="Digite a mensagem\nShift + Enter para nova linha"
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               rows={6}
