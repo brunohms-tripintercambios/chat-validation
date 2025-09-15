@@ -54,13 +54,37 @@ export default function RequestForm({ title, endpointPath, method, fields = ["us
     }
   }
 
+  function generateRandomId(length = 28) {
+    const chars =
+      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    let result = "";
+    for (let i = 0; i < length; i++) {
+      result += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return result;
+  }
+
+  function handleGenerate(e: React.MouseEvent<HTMLButtonElement>) {
+    const newId = generateRandomId();
+    setUserId(newId);
+  }
+
   return (
     <div className={styles.wrap}>
       <h1 className={styles.title}>{title}</h1>
       <form className={styles.form} onSubmit={onSubmit}>
         {fields.includes("userId") && (
           <label className={styles.label}>
-            ID do usuário
+            <div className={styles.userIdRow}>
+              <p>ID do usuário</p>
+              <button
+                type="button"
+                onClick={handleGenerate}
+                className={styles.userIdButton}
+              >
+                Gerar ID
+              </button>
+            </div>
             <input
               className={styles.input}
               placeholder="ex: 123"

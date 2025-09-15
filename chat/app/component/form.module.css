@@ -22,7 +22,24 @@
   font-weight: 600;
 }
 
-.input, .textarea {
+.userIdRow {
+  display: flex;
+  flex-direction: row;
+  align-content: center;
+  gap: 8px;
+}
+
+.userIdButton {
+  padding: 0px 16px;
+  border: none;
+  border-radius: 8px;
+  background: #333;
+  color: white;
+  cursor: pointer;
+}
+
+.input,
+.textarea {
   border: 1px solid #ccc;
   border-radius: 6px;
   padding: 10px 12px;
@@ -30,9 +47,12 @@
 }
 
 @media (prefers-color-scheme: dark) {
-  .input, .textarea {
+
+  .input,
+  .textarea {
     color: black;
   }
+
   .pre {
     color: black;
   }
@@ -63,6 +83,16 @@
   padding: 12px;
 }
 
-.meta { font-size: 14px; color: #444; }
-.error { color: #b00020; white-space: pre-wrap; }
-.pre { white-space: pre-wrap; }
+.meta {
+  font-size: 14px;
+  color: #444;
+}
+
+.error {
+  color: #b00020;
+  white-space: pre-wrap;
+}
+
+.pre {
+  white-space: pre-wrap;
+}
