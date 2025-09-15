@@ -6,6 +6,12 @@ import styles from "./form.module.css";
 
 type Field = "userId" | "message" | "ids";
 
+type LogItem = {
+  type: "result" | "error";
+  message: string;
+  elapsed?: number;
+};
+
 type Props = {
   title: string;
   endpointPath: string;
@@ -18,16 +24,19 @@ export default function RequestForm({ title, endpointPath, method, fields = ["us
   const [ids, setIds] = useState("");
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
-  const [elapsed, setElapsed] = useState<number | null>(null);
-  const [result, setResult] = useState<string | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  const [logs, setLogs] = useState<LogItem[]>([]);
+
+  function addResult(newResult: string, elapsed?: number) {
+    setLogs(prev => [{ type: "result", message: newResult, elapsed }, ...prev]);
+  }
+
+  function addError(newError: string) {
+    setLogs(prev => [{ type: "error", message: newError }, ...prev]);
+  }
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     setLoading(true);
-    setError(null);
-    setResult(null);
-    setElapsed(null);
 
     try {
       const res = await fetch("/proxy", {
@@ -38,16 +47,17 @@ export default function RequestForm({ title, endpointPath, method, fields = ["us
       const { data, elapsed, error: errMsg } = await res.json();
 
       if (!res.ok) {
-        setError(errMsg || "Request failed");
+        addError(errMsg || "Request failed");
       } else {
-        setResult(data);
-        setElapsed(elapsed);
+        const dataWithMessage = { ...data, requestMessage: message };
+
+        addResult(dataWithMessage, elapsed);
       }
     } catch (err: unknown) {
       if (err instanceof Error) {
-        setError(err?.message || "Network error");
+        addError(err?.message || "Network error");
       } else {
-        setError(String(err));
+        addError(String(err));
       }
     } finally {
       setLoading(false);
@@ -86,6 +96,7 @@ export default function RequestForm({ title, endpointPath, method, fields = ["us
               </button>
             </div>
             <input
+              type="text"
               className={styles.input}
               placeholder="ex: 123"
               value={userId}
@@ -118,24 +129,37 @@ export default function RequestForm({ title, endpointPath, method, fields = ["us
               onChange={(e) => setMessage(e.target.value)}
               rows={6}
               required
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && !e.shiftKey) {
+                  onSubmit(e);
+                }
+              }}
             />
           </label>
         )}
 
-        <button className={styles.button} type="submit" disabled={loading}>
+        <button
+          className={styles.button}
+          type="submit"
+          disabled={loading}>
           {loading ? "Enviando..." : "Enviar"}
         </button>
       </form>
 
-      {(result || error) && (
-        <div className={styles.resultBox}>
-          {elapsed !== null && (
-            <div className={styles.meta}>Tempo da request: {elapsed.toFixed(0)} ms</div>
-          )}
-          {error && <pre className={styles.error}>Erro: {error}</pre>}
-          {result && !error && (
-            <pre className={styles.pre}>{JSON.stringify(result, null, 2)}</pre>
-          )}
+      {logs.length > 0 && (
+        <div className={styles.logsWrapper}>
+          {logs.map((log, idx) => (
+            <div key={idx} className={styles.resultBox}>
+              <pre className={log.type === "error" ? styles.error : styles.pre}>
+                {log.elapsed && (
+                  <div className={styles.meta}>Tempo da request: {log.elapsed.toFixed(0)} ms</div>
+                )}
+                {log.type === "error"
+                  ? `Erro: ${log.message}`
+                  : JSON.stringify(log.message, null, 2)}
+              </pre>
+            </div>
+          ))}
         </div>
       )}
     </div>
