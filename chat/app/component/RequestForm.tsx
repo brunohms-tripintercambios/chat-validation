@@ -50,9 +50,9 @@ export default function RequestForm({ title, endpointPath, method, fields = ["us
         addError(errMsg || "Request failed");
       } else {
         const dataWithMessage = {
-          ...data,
-          ...(message ? { request_message: message } : {}),
           ...(userId ? { user_id: userId } : {}),
+          ...(message ? { request_message: message } : {}),
+          ...data,
         };
 
         addResult(dataWithMessage, elapsed);
