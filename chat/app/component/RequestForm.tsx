@@ -49,7 +49,10 @@ export default function RequestForm({ title, endpointPath, method, fields = ["us
       if (!res.ok) {
         addError(errMsg || "Request failed");
       } else {
-        const dataWithMessage = { ...data, requestMessage: message };
+        const dataWithMessage = {
+          ...data,
+          ...(message ? { requestMessage: message } : {}),
+        };
 
         addResult(dataWithMessage, elapsed);
       }
