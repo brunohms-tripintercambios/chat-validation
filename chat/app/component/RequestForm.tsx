@@ -50,8 +50,9 @@ export default function RequestForm({ title, endpointPath, method, fields = ["us
         addError(errMsg || "Request failed");
       } else {
         const dataWithMessage = {
+          ...(userId ? { user_id: userId } : {}),
+          ...(message ? { request_message: message } : {}),
           ...data,
-          ...(message ? { requestMessage: message } : {}),
         };
 
         addResult(dataWithMessage, elapsed);
@@ -177,7 +178,7 @@ export default function RequestForm({ title, endpointPath, method, fields = ["us
                   <div className={styles.meta}>Tempo da request: {log.elapsed.toFixed(0)} ms</div>
                 )}
                 {log.type === "error"
-                  ? `Erro: ${log.message}`
+                  ? `Error: ${log.message}`
                   : JSON.stringify(log.message, null, 2)}
               </pre>
             </div>
