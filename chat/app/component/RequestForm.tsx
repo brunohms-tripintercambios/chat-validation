@@ -98,14 +98,33 @@ export default function RequestForm({ title, endpointPath, method, fields = ["us
                 Gerar ID
               </button>
             </div>
-            <input
-              type="text"
-              className={styles.input}
-              placeholder="ex: 123"
-              value={userId}
-              onChange={(e) => setUserId(e.target.value)}
-              required
-            />
+            <div className={styles.idContainer}>
+              <input
+                type="text"
+                className={styles.input}
+                placeholder="ex: 123"
+                value={userId}
+                onChange={(e) => setUserId(e.target.value)}
+                required
+              />
+              <button
+                type="button"
+                onClick={async () => {
+                  if (userId) {
+                    await fetch("/proxy", {
+                      method: "POST",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({ body: { method: "PUT", endpointPath: "/api/delete", ids: userId } }),
+                    });
+                  }
+                  setUserId("");
+                }}
+                className={styles.delete}
+              >
+                Deletar
+              </button>
+            </div>
+
           </label>
         )}
 
